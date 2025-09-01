@@ -3,28 +3,11 @@ This repository has beginner friendly kubernetes basic components examples for p
 ## 1. Pod – 
 Smallest Deployable unit in cluster
 ### a. Single container pod
-** Example: ** - jsmounika/kubernetes-practice/1-pods/pod-with-single-container.yaml 
-```
-apiVersion: v1
-kind: Pod
-metadata:
-  name: simple-nginx-pod
-  namespace: simple-k8s-app
-  labels:
-    app: nginx
-    tier: frontend
-spec:
-  containers:
-  - name: nginx
-    image: nginx:1.21
-    imagePullPolicy: IfNotPresent
-    ports:
-    - containerPort: 80
-```
+**Example:** - [Pod with Single container](1-pods/pod-with-single-container.yaml)
 ### b. Multi-container pod
-** Example: **
+**Example:** - [Pod with Single container](1-pods/pod-with-multi-container.yaml)
 ## 2. Deployments
-** Example: **
+**Example:**
 ## 3. ReplicaSets
 ## 4. Services
 ### a. ClusterIP
