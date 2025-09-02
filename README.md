@@ -5,7 +5,7 @@ Smallest Deployable unit in cluster
 ### a. Single container pod
 **Example:** - [Pod with Single container](1-pods/pod-with-single-container.yaml)
 ### b. Multi-container pod
-**Example:** - [Pod with Single container](1-pods/pod-with-multi-container.yaml)
+**Example:** - [Pod with Multiple containers](1-pods/pod-with-multi-container.yaml)
 ## 2. Deployments
 **Example:**
 ## 3. ReplicaSets
