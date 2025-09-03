@@ -1,23 +1,66 @@
+# Pod with Resource Quotas and QoS Classes Example
 apiVersion: v1
 kind: Pod
 metadata:
-  name: simple-nginx-pod
-  # namespace: simple-k8s-app
+  name: qos-guaranteed-pod
+  namespace: simple-k8s-app
   labels:
-    app: nginx
+    app: qos-guaranteed
+    qos-class: guaranteed
 spec:
   containers:
-  - name: nginx
-    image: nginx:latest
-    imagePullPolicy: IfNotPresent
+  - name: guaranteed-container
+    image: nginx:1.21
     ports:
-    - port: 80
-      targetPort: 80
-      containerPort: 80
+    - containerPort: 80
+    # QoS: Guaranteed - requests = limits for both CPU and memory
     resources:
-      requests:   #Minimum resources needed by container
-        memory: "64Mi"
-        cpu: "250m"
-      limits:     #Maximum resources allowed for container. Container terminated if exceeds
-        memory: "128Mi"
+      requests:
+        memory: "256Mi"
         cpu: "500m"
+      limits:
+        memory: "256Mi"  # Same as requests = Guaranteed QoS
+        cpu: "500m"      # Same as requests = Guaranteed QoS
+
+---
+# Pod demonstrating Burstable QoS Class
+apiVersion: v1
+kind: Pod
+metadata:
+  name: qos-burstable-pod
+  namespace: simple-k8s-app
+  labels:
+    app: qos-burstable
+    qos-class: burstable
+spec:
+  containers:
+  - name: burstable-container
+    image: httpd:2.4
+    ports:
+    - containerPort: 80
+    # QoS: Burstable - has requests but limits > requests
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"  # Higher than requests = Burstable QoS
+        cpu: "1000m"     # Higher than requests = Burstable QoS
+
+---
+# Pod demonstrating BestEffort QoS Class
+apiVersion: v1
+kind: Pod
+metadata:
+  name: qos-besteffort-pod
+  namespace: simple-k8s-app
+  labels:
+    app: qos-besteffort
+    qos-class: besteffort
+spec:
+  containers:
+  - name: besteffort-container
+    image: busybox
+    command: ['sleep', '3600']
+    # QoS: BestEffort - no requests or limits specified
+    # resources: {}  # No resources specified = BestEffort QoS
