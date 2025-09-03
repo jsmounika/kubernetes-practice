@@ -1,0 +1,40 @@
+# Multi-container Pod -
+
+# Here refering to the volume by its name (shared-data) and specify a mountPath where the shared folder should appear inside that container's filesystem.
+# In this example:
+  # The sidecar-container container writes to its /shared/index.html file.
+  # Because /shared is a mount for the shared-data volume, the file is actually written to the shared emptyDir on the node.
+  # The nginx-container container can read that same file from its /usr/share/nginx/html directory, because it's mounting the exact same emptyDir volume.
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: multi-container-pod
+  namespace: simple-k8s-app
+  labels:
+    app: multi-app
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx:1.21
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: shared-data
+      mountPath: /usr/share/nginx/html
+  - name: sidecar-container
+    image: busybox
+    command: ['sh', '-c', 'echo "Hello from sidecar" > /shared/index.html && sleep 3600']
+    volumeMounts:
+    - name: shared-data
+      mountPath: /shared
+  volumes:
+  - name: shared-data   #/var/lib/kubelet/pods/<pod_uid>/volumes/kubernetes.io~empty-dir/shared-data
+    emptyDir: 
+      sizeLimit: 1Gi  # Limit the size of emptyDir volume
+
+# Command to know pod uid : kubectl get pod <pod-name> -n <namespace> -o jsonpath='{.metadata.uid}'
+# To enter into nginx-container --> k exec -it -n simple-k8s-app multi-container-pod -c nginx-container -- /bin/bash
+# To enter into sidecar-container --> k exec -it -n simple-k8s-app multi-container-pod -c sidecar-container -- /bin/sh
+# To check the content of shared-data volume in nginx-container --> k exec -it -n simple-k8s-app multi-container-pod -c nginx-container -- cat /usr/share/nginx/html/index.html
+# To check the content of shared-data volume in sidecar-container --> k exec -it -n simple-k8s-app multi-container-pod -c sidecar-container -- cat /shared/index.html

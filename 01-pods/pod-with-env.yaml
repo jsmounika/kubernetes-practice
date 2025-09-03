@@ -1,0 +1,26 @@
+# Pod with Environment Variables
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app-pod
+  # namespace: simple-k8s-app
+  labels:
+    app: web-app
+spec:
+  containers:
+  - name: web-app
+    image: httpd:latest
+    ports:
+    - containerPort: 80
+    env:
+    - name: ENV
+      value: "production"
+    - name: APP_VERSION
+      value: "1.0"
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "100m"
+      limits:
+        memory: "128Mi"
+        cpu: "200m"
