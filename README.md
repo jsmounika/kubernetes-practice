@@ -54,10 +54,32 @@ Smallest Deployable unit in cluster in which container will run.
 		How it's set: The containers in the Pod have no memory or CPU requests or limits set at all.
 		Behavior: These are the first Pods to be evicted when the node is under resource pressure. They run with whatever resources are leftover on the node.
 		Eg: No resources will be mentioned here.
+### e. Pod with Readiness
+**Example:** - [Pod with Readiness](01-pods/pod-with-readiness.yaml)
+### f. Pod with Liveness
+**Example:** - [Pod with Liveness](01-pods/pod-with-liveness.yaml)
+**The difference between liveness probe and readiness probe:**
+
+   **Liveness Probe:**
+    	- Determines if a container is running properly
+        - If it fails, Kubernetes will restart the container
+        - Used to detect application deadlocks or crashes
+        - In your example, it checks every 10 seconds after a 30-second initial delay
+
+   **Readiness Probe:**
+        - Determines if a container is ready to receive traffic
+        - If it fails, Kubernetes removes the Pod from Service endpoints (no traffic sent)
+        - Used to prevent premature traffic to containers still initializing
+        - In your example, it checks every 5 seconds after only a 5-second initial delay
+
+   _Simply put: Liveness probe restarts unhealthy containers, while Readiness probe controls traffic routing to containers._
+
 
 ## 2. Deployments
-**Example:**
+**Example:** - [Sample Deployment](02-deployments/deploy.yaml)
+
 ## 3. ReplicaSets
+**Example:** - 
 ## 4. Services
 ### a. ClusterIP
 ### b. NodePort
