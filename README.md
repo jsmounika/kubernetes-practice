@@ -2,7 +2,7 @@
 This repository has beginner friendly kubernetes basic components examples for practice
 ## 1. Pod – 
 Smallest Deployable unit in cluster in which container will run.
-**Ports in pod spec-**
+ **Ports in pod spec-**
 1. **port** --> This is the port on the Service itself inside the cluster. the Service listens on port 80. **Eg:** _port: 80_
 2. **targetPort** --> This is the port on the Pod/container that the Service routes traffic to. The Service forwards incoming traffic on port to the Pod’s targetPort. **Eg:** _targetPort: 80_
 3. **containerPort** --> It tells Kubernetes what port the container (inside the Pod) is listening on. The targetPort in the Service should match this container port. **Eg:** _containerPort: 8080_
@@ -19,8 +19,8 @@ Smallest Deployable unit in cluster in which container will run.
 **Example:** - [Pod with Multiple containers](01-pods/pod-with-multi-container.yaml)
 ### d. Pod with resources
 **Example:** - [Pod with Resources](01-pods/pod-with-resources.yaml)
-**Types of QoS (Resources in pod spec):**
-**What is QoS? -**
+ **Types of QoS (Resources in pod spec):**
+ **What is QoS? -**
 	QoS stands for Quality of Service. It's a system Kubernetes uses to classify and prioritize Pods, especially when a node is running low on resources like CPU or memory.
 	When a node is under pressure, the Kubernetes scheduler (kubelet) might need to terminate (evict) Pods to free up resources.
 	The QoS class of a Pod determines its priority in this eviction process.
@@ -58,7 +58,7 @@ Smallest Deployable unit in cluster in which container will run.
 **Example:** - [Pod with Readiness](01-pods/pod-with-readiness.yaml)
 ### f. Pod with Liveness
 **Example:** - [Pod with Liveness](01-pods/pod-with-liveness.yaml)
-**The difference between liveness probe and readiness probe:**
+ **The difference between liveness probe and readiness probe:**
 
    **Liveness Probe:**
     	- Determines if a container is running properly
