@@ -3,11 +3,11 @@ This repository has beginner friendly kubernetes basic components examples for p
 ## 1. Pod – 
 Smallest Deployable unit in cluster in which container will run.
 **Ports in pod spec-**
-  1. **port** --> This is the port on the Service itself inside the cluster. the Service listens on port 80. **Eg:** _port: 80_
-	2. **targetPort** --> This is the port on the Pod/container that the Service routes traffic to. The Service forwards incoming traffic on port to the Pod’s targetPort. **Eg:** _targetPort: 80_
-	3. **containerPort** --> It tells Kubernetes what port the container (inside the Pod) is listening on. The targetPort in the Service should match this container port. **Eg:** _containerPort: 8080_
+1. **port** --> This is the port on the Service itself inside the cluster. the Service listens on port 80. **Eg:** _port: 80_
+2. **targetPort** --> This is the port on the Pod/container that the Service routes traffic to. The Service forwards incoming traffic on port to the Pod’s targetPort. **Eg:** _targetPort: 80_
+3. **containerPort** --> It tells Kubernetes what port the container (inside the Pod) is listening on. The targetPort in the Service should match this container port. **Eg:** _containerPort: 8080_
 							   
-	**Here’s the traffic flow:**
+**Here’s the traffic flow:**
 		User/Client → Service (port) → Pod (targetPort) → Container (containerPort)
 		Note: most cases --> targetPort == containerPort
 
