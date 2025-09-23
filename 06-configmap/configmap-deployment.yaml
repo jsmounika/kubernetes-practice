@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment-config
+  labels:
+    app: my-config
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-config
+  template:
+    metadata:
+      labels:
+        app: my-config
+    spec:
+      containers:
+        - name: my-container
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+      # Reference ConfigMap as whole
+          # envFrom:
+          # - configMapRef:
+          #     name: sample-config
+      # Reference ConfigMap for individual environment variables
+          env:
+          - name: APP_ENV
+            valueFrom:
+              configMapKeyRef:
+                name: my-config
+                key: APP_ENV

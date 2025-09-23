@@ -1,0 +1,10 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: storage-class
+provisioner: kubernetes.io/no-provisioner  # For static provisioning
+volumeBindingMode: WaitForFirstConsumer   # PV get created once the pod created
+
+
+#Note: Dynamic provisioning for hostpath cann't be done in standard Kubernetes clusters. So we have to manually create PV (thats the reason we are creating pv.yaml file)
+#Dynamic provisioning does not require a predefined PV yaml. The PVC will automatically trigger the creation of a PV based on the StorageClass parameters when a PVC is created.

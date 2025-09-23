@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: app-pvc
+spec:
+  # volumeName: PV-NAME #If you want to bind specific PV to PVC
+  storageClassName: storage-class
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+
+# ---
+# pvc-dynamic.yaml
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: dynamic-pvc
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 1Gi
+#   storageClassName: local-path  # Use your default StorageClass here
