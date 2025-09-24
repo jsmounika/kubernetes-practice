@@ -79,20 +79,69 @@ This repository has beginner friendly kubernetes basic components examples for p
 
    _Simply put: Liveness probe restarts unhealthy containers, while Readiness probe controls traffic routing to containers._
 
+## 2. ReplicaSets  
+Definition:A ReplicaSet ensures that a specified number of pod replicas are running at any given time.  
+- Maintains the desired number of pod replicas.  
+- Automatically replaces failed pods.  
 
-## 2. Deployments
-**Example:** - [Sample Deployment](02-deployments/deploy.yaml)
+**Example:** - [Sample Replicaset](02-replicasets/replica.yaml)  
+In the example, It will run 3 pods with the nginx image. If one pod crashes, ReplicaSet will create a new one to maintain 3.
 
-## 3. ReplicaSets
-**Example:** - [Sample Replicaset](03-replicasets/replica.yaml)
+## 3. Deployments
+A Deployment is a higher-level abstraction that manages ReplicaSets and provides features like rolling updates, rollbacks, and versioning.  
+- Manages ReplicaSets.  
+- Enables zero-downtime updates.  
+- Supports rollback to previous versions.  
+
+**Example:** - [Sample Deployment](03-deployments/deployment.yaml)  
+In above example, It is also runs 3 pods, but now you can:  
+- Update the image to nginx:1.15 from 1.14 → Kubernetes will create a new ReplicaSet and gradually replace old pods.  
+- Roll back if something goes wrong. 
 
 **The difference between Deployments and ReplicaSets**  
+| Feature            | ReplicaSet                     | Deployment                            |
+|--------------------|--------------------------------|---------------------------------------|
+| Manages Pods       | ✅ Yes                         | ✅ Yes (via ReplicaSet)              |
+| Rolling Updates    | ❌ No                          | ✅ Yes                               |
+| Rollbacks          | ❌ No                          | ✅ Yes                               |
+| Versioning         | ❌ No                          | ✅ Yes                               |
+| Recommended Usage  | ❌ Not usually directly used   | ✅ Preferred for managing apps       |
 
 ## 4. Services
+Kubernetes Services expose your application running in Pods to other parts of your cluster or to the outside world.  
+There are four main types of services:  
+### a. ClusterIP:
+🔹 **Use Case:** Internal communication between services within the cluster.  
+🔹 **Accessible From:** Only inside the cluster.  
+🔹 Most secure (not exposed externally).
+**Example:** - [Sample ClusterIP Service](04-services/service-clusterIP.yaml), [Deployment](04-services/deployment.yaml)  
+### b. NodePort:
+🔹 **Use Case:** Expose service on a static port on each node.  
+🔹 **Accessible From:** Outside the cluster via <NodeIP>:<NodePort>.  
+🔹 Simple way to expose services externally. Port range: **30000–32767**  
+**Example:** - [Sample NodePort Service](04-services/service-nodePort.yaml), [Deployment](04-services/deployment.yaml)   
+### c. LoadBalancer:  
+🔹 **Use Case:** Expose service externally using a cloud provider’s load balancer.  
+🔹 **Accessible From:** Internet (public IP).  
+🔹 Automatically provisions a public IP. 
+**Example:** - [Sample LoadBalancer Service](04-services/service-loadbalancer.yaml), [Deployment](04-services/deployment.yaml)
+### d. Headless
+A Headless Service is a Kubernetes service without a ClusterIP. Instead of load-balancing traffic, it lets you directly access individual pod IPs or DNS records.  
+🔹 **Use Case:** Used when you want to discover individual pods (e.g., for StatefulSets).  
+🔹 **Accessible From:** Only inside the cluster.  
+🔹 This service will not have a virtual IP. Instead, DNS queries to _my-headless-service.default.svc.cluster.local_ will return the IPs of all matching pods.
+🔹 No ClusterIP assigned (clusterIP: None).
+**Example:** -  [Sample Headless Service](04-services/service-headless.yaml), [StatefulSet for Headless service](04-services/statefulset-for-headless-svc.yaml) -->  This headless service allows DNS resolution to each MongoDB pod like: mongo-0.mongo.default.svc.cluster.local, mongo-1.mongo.default.svc.cluster.local
+                  
 
-### a. ClusterIP
-### b. NodePort
-### c. Headless
+**Summary Table**
+| Service Type   | Exposes To         | Use Case                          | Notes                                 |
+|----------------|--------------------|-----------------------------------|---------------------------------------|
+| ClusterIP      | Internal only      | Internal app communication        | Default, most secure                  |
+| NodePort       | External via Node  | Simple external access            | Limited port range                    |
+| LoadBalancer   | External via cloud | Production-grade external access  | Requires cloud provider               |
+| Headless       | Internal only      | Pod-level access & discovery      | No ClusterIP, returns pod IPs         |
+
 ## 5. Volumes
 ### a. EmptyDir
 emptyDir
