@@ -11,8 +11,8 @@ This repository has beginner friendly kubernetes basic components examples for p
 2. **targetPort** --> This is the port on the Pod/container that the Service routes traffic to. The Service forwards incoming traffic on port to the Pod’s targetPort. **Eg:** _targetPort: 80_
 3. **containerPort** --> It tells Kubernetes what port the container (inside the Pod) is listening on. The targetPort in the Service should match this container port. **Eg:** _containerPort: 8080_
 							   
-**Here’s the traffic flow:**
-		User/Client → Service (port) → Pod (targetPort) → Container (containerPort)
+**Here’s the traffic flow:**  
+		User/Client → Service (port) → Pod (targetPort) → Container (containerPort)  
 		Note: most cases --> targetPort == containerPort
 
 ### a. Single container pod
@@ -25,9 +25,9 @@ This repository has beginner friendly kubernetes basic components examples for p
 **Example:** - [Pod with Resources](01-pods/pod-with-resources.yaml)  
 **Types of QoS (Resources in pod spec):**  
 **What is QoS? -**  
-	QoS stands for Quality of Service. It's a system Kubernetes uses to classify and prioritize Pods, especially when a node is running low on resources like CPU or memory.
-	When a node is under pressure, the Kubernetes scheduler (kubelet) might need to terminate (evict) Pods to free up resources.
-	The QoS class of a Pod determines its priority in this eviction process.
+	QoS stands for Quality of Service. It's a system Kubernetes uses to classify and prioritize Pods, especially when a node is running low on resources like CPU or memory.  
+	When a node is under pressure, the Kubernetes scheduler (kubelet) might need to terminate (evict) Pods to free up resources.  
+	The QoS class of a Pod determines its priority in this eviction process.  
 	There are three QoS classes - 
 
 	1. Guaranteed (Highest Priority) -
@@ -113,7 +113,7 @@ There are four main types of services:
 ### a. ClusterIP:
 🔹 **Use Case:** Internal communication between services within the cluster.  
 🔹 **Accessible From:** Only inside the cluster.  
-🔹 Most secure (not exposed externally).
+🔹 Most secure (not exposed externally).  
 **Example:** - [Sample ClusterIP Service](04-services/service-clusterIP.yaml), [Deployment](04-services/deployment.yaml)  
 ### b. NodePort:
 🔹 **Use Case:** Expose service on a static port on each node.  
@@ -123,18 +123,17 @@ There are four main types of services:
 ### c. LoadBalancer:  
 🔹 **Use Case:** Expose service externally using a cloud provider’s load balancer.  
 🔹 **Accessible From:** Internet (public IP).  
-🔹 Automatically provisions a public IP. 
+🔹 Automatically provisions a public IP.  
 **Example:** - [Sample LoadBalancer Service](04-services/service-loadbalancer.yaml), [Deployment](04-services/deployment.yaml)
 ### d. Headless
 A Headless Service is a Kubernetes service without a ClusterIP. Instead of load-balancing traffic, it lets you directly access individual pod IPs or DNS records.  
 🔹 **Use Case:** Used when you want to discover individual pods (e.g., for StatefulSets).  
 🔹 **Accessible From:** Only inside the cluster.  
-🔹 This service will not have a virtual IP. Instead, DNS queries to _my-headless-service.default.svc.cluster.local_ will return the IPs of all matching pods.
-🔹 No ClusterIP assigned (clusterIP: None).
+🔹 This service will not have a virtual IP. Instead, DNS queries to _my-headless-service.default.svc.cluster.local_ will return the IPs of all matching pods.  
+🔹 No ClusterIP assigned (clusterIP: None).  
 **Example:** -  [Sample Headless Service](04-services/service-headless.yaml), [StatefulSet for Headless service](04-services/statefulset-for-headless-svc.yaml) -->  This headless service allows DNS resolution to each MongoDB pod like: mongo-0.mongo.default.svc.cluster.local, mongo-1.mongo.default.svc.cluster.local
                   
-
-**Summary Table**
+**Summary Table :**
 | Service Type   | Exposes To         | Use Case                          | Notes                                 |
 |----------------|--------------------|-----------------------------------|---------------------------------------|
 | ClusterIP      | Internal only      | Internal app communication        | Default, most secure                  |
@@ -144,66 +143,94 @@ A Headless Service is a Kubernetes service without a ClusterIP. Instead of load-
 
 ## 5. Volumes
 ### a. EmptyDir
-emptyDir
-Use case: Temporary storage shared between containers in a pod.
-Example: A web server and a log processor sharing logs.
-Note: Data is deleted when the pod is deleted.
+**Use case:** Temporary storage shared between containers in a pod.  
+**Data Lifetime:** Data is deleted when the pod is deleted.  
+**Example:** [EmptyDir Volume](05-volumes/emptyDir.yaml)  
 
 ### b. HostPath
- hostPath
-Use case: Mounts a file or directory from the host node into the pod.
-Example: Accessing logs or configuration files from the host.
-Note: Tightly coupled to the node, not portable.
+**Use case:** Mounts a file or directory from the host node into the pod.  
+**Note:** Tightly coupled to the node, not portable.  
+**Example:** [HostPath Volume](05-volumes/hostPath.yaml)  
 
-### c. PersistentVolumeClaim
-persistentVolumeClaim (PVC)
-Use case: Requests storage from a PersistentVolume (PV).
-Example: Databases like MySQL or MongoDB needing durable storage.
-Note: Decouples storage from pods, supports dynamic provisioning.
+### c. PersistentVolumeClaim 
+**Use case:** Requests storage from a PersistentVolume (PV).  
+**Note:** Decouples storage from pods, supports dynamic provisioning.  
+**Example:** [PV including PVC](08-persistentVolumes) - Databases like MySQL or MongoDB needing durable storage.  
 
 ### d. NFS
-nfs (Network File System)
-Use case: Shared storage across multiple pods and nodes.
-Example: Shared media files or backups.
-Note: Requires an NFS server setup.
+**Use case:** Shared storage across multiple pods and nodes using an external NFS server.  
+**Note:** Requires an NFS server setup.  
+**Example:** [NFS Volume](05-volumes/nfs.yaml)  
 
-### e. CSI
-CSI (Container Storage Interface)
-Use case: Pluggable storage from cloud providers or third-party vendors.
-Example: AWS EBS, Azure Disk, Google Persistent Disk.
-Note: Modern and flexible way to integrate external storage.
+### e. ConfigMap (In Volumes)
+_ConfigMaps and Secrets can be used in two main ways: Volumes and Enviornment variables (Here as volumes)_  
+**Use case:** Inject configuration files into pods  
+- ConfigMaps store non-sensitive configuration data.  
+- Can be mounted as files or used as environment variables.  
+**Example:** [Config-volume](05-volumes/config-deployment.yaml)  
+This example deployment mounts ConfigMap as **volumes**:  
+- ConfigMap is mounted at `/etc/config`.  
+- Useful when your app reads config from files.
 
-## 6. ConfigMap
-configMap & secret
-Use case: Inject configuration data or sensitive information.
-Example: API keys, passwords, or app settings.
-Note: Mounted as files or environment variables.
+### f. Secrets (In Volumes_)
+**Use case:** Securely inject sensitive data like passwords or tokens.  
+- Secrets are base64 encoded and securely managed.  
+- Ideal for storing credentials, tokens, and keys.  
+**Example:** [Secrets-volume](05-volumes/secret-deployment.yaml)  
+This example deployment mounts Secret as **volumes**:  
+- Secret is mounted at `/etc/secret`.  
+Useful when your app reads secrets from files.
+
+## 6. ConfigMap (As env variables)
+**Use case:** ConfigMaps are ideal for non-sensitive configuration like log levels or mode  
+**Example:** [ConfigMap](06-configmap/configmap.yaml), [ConfigMap-deployment](06-configmap/configmap-deployment.yaml)  
+In this example,  
+ - `APP_MODE` is injected from ConfigMap  
 
 ## 7. Secrets
+**Use case:** Secrets are used for sensitive data like passwords and tokens  
+**Example:** [Secrets](07-secrets/secrets.yaml), [Secret-deployment](07-secrets/secret-deployment.yaml)  
+In this example,  
+- `DB_PASSWORD` is injected from Secret.
+
+### 🔐 ConfigMap vs Secret in Kubernetes
+
+| Feature           | ConfigMap                        | Secret                             |
+|------------------|----------------------------------|------------------------------------|
+| Purpose           | Store non-sensitive config data  | Store sensitive data (e.g., passwords) |
+| Encoding          | Plain text                       | Base64 encoded                     |
+| Usage Methods     | Volume mount, Env variables      | Volume mount, Env variables        |
+| Typical Use Cases | App settings, flags              | Credentials, tokens, keys          |
+
+### ✅ Usage Options
+
+1. **As Volumes**: Mounted as files inside containers.  
+2. **As Environment Variables**: Injected using `valueFrom.configMapKeyRef` or `valueFrom.secretKeyRef`.
+
 ## 8. Persistent Volume  
-What is a Persistent Volume (PV)?
+**What is a Persistent Volume (PV)?**  
 A Persistent Volume (PV) is a piece of storage in the cluster that has been provisioned by an administrator or dynamically created using Storage Classes. It’s like a pre-configured hard drive that your pods can use to store data persistently.
 
 Think of it as a USB drive that you plug into your computer (the pod). Even if the computer restarts, the data on the USB stays.
 
-🧩 How Does It Work?
-Here’s a simple step-by-step explanation:
+**🧩 How Does It Work?**
+Here’s a simple step-by-step explanation:  
+**1. Persistent Volume (PV)**  
+- Created by the cluster admin or dynamically by Kubernetes.  
+- Represents actual storage (like NFS, AWS EBS, etc.).  
+- Lives independently of any pod.  
+**2. Persistent Volume Claim (PVC)**  
+- A request for storage by a user or application.  
+- Specifies how much storage is needed and access mode (e.g., ReadWriteOnce).  
+- Think of it like asking for a USB drive with specific size and features.  
+**3. Binding**  
+- Kubernetes matches a PVC to a suitable PV.  
+- Once matched, the PV is bound to the PVC and can’t be used by another claim.  
+**4. Pod Uses the PVC**  
+- The pod mounts the PVC like a volume.  
+- Now the pod can read/write data to the persistent storage.  
 
-1. Persistent Volume (PV)
-Created by the cluster admin or dynamically by Kubernetes.
-Represents actual storage (like NFS, AWS EBS, GCE PD, etc.).
-Lives independently of any pod.
-2. Persistent Volume Claim (PVC)
-A request for storage by a user or application.
-Specifies how much storage is needed and access mode (e.g., ReadWriteOnce).
-Think of it like asking for a USB drive with specific size and features.
-3. Binding
-Kubernetes matches a PVC to a suitable PV.
-Once matched, the PV is bound to the PVC and can’t be used by another claim.
-4. Pod Uses the PVC
-The pod mounts the PVC like a volume.
-Now the pod can read/write data to the persistent storage.
-🔁 Lifecycle Summary
+**🔁 Lifecycle Summary**
 [Admin/User] --> Creates PV  
 [App/User] --> Creates PVC  
 Kubernetes --> Matches PVC to PV (Binding)  
@@ -214,19 +241,18 @@ Pod --> Uses PVC as a Volume
 A StorageClass in Kubernetes defines how storage is provisioned dynamically. Instead of manually creating a Persistent Volume (PV), you can let Kubernetes automatically create one when a PVC is made.  
 
 Think of it like ordering a custom USB drive online:  
-- You specify the size and type.
-- The system provisions it for you.
-**How It Works**
-Storage
-Class defines the type of storage (e.g., AWS EBS, GCE PD, etc.).  
-PVC refers to the StorageClass by name.  
-Kubernetes dynamically creates a PV that matches the PVC request.  
+- You specify the size and type.  
+- The system provisions it for you.  
+**How It Works**  
+-> Storage Class defines the type of storage (e.g., AWS EBS, GCE PD, etc.).  
+-> PVC refers to the StorageClass by name.  
+-> Kubernetes dynamically creates a PV that matches the PVC request.  
 
-✅ **Correct Understanding of StorageClass, PVC, and PV**
-🔹 **StorageClass**
+✅ **Correct Understanding of StorageClass, PVC, and PV**  
+🔹 **StorageClass**  
 Defines how storage should be provisioned (e.g., type, filesystem, cloud provider).  
 It does not request storage — it provides the instructions for provisioning.  
-🔹 **PersistentVolumeClaim (PVC)**
+🔹 **PersistentVolumeClaim (PVC)**  
 Requests storage from Kubernetes.  
 Refers to a StorageClass to specify how the storage should be provisioned.  
 Triggers the creation of a PersistentVolume (PV) if dynamic provisioning is enabled.  
@@ -240,8 +266,11 @@ Represents the actual storage resource that gets bound to the PVC.
 [Kubernetes] --> Creates PV --> Binds PV to PVC  
 [Pod] --> Uses PVC as a volume  
 
-**NOTE:** If we don't specify Storage Class, then it flow will be-  
-
+**NOTE:** If we don't specify Storage Class, then the flow will be-  
+[Admin] --> Creates PV manually  
+[User] --> Creates PVC --> Does NOT specify StorageClass (PVC is bound to a pre-existing PV that matches its request.)  
+[Kubernetes] --> Matches PVC to an existing PV (based on size, access mode)  
+[Pod] --> Uses PVC as a volume  
 
 ## 10. StatefulSet
 ## 11. DeamonSet

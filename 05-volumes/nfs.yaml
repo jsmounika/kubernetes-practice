@@ -1,24 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: emptydir-demo
+  name: nfs-demo
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: emptydir-app
+      app: nfs-app
   template:
     metadata:
       labels:
-        app: emptydir-app
+        app: nfs-app
     spec:
       containers:
       - name: app-container
         image: busybox
         command: ["sleep", "3600"]
         volumeMounts:
-        - name: temp-storage
-          mountPath: /tmp/data
+        - name: nfs-storage
+          mountPath: /mnt/nfs
       volumes:
-      - name: temp-storage
-        emptyDir: {}
+      - name: nfs-storage
+        nfs:
+          server: 10.10.10.10 #Server IP address in which NFS mount is created
+          path: /shared/data  #Path of NFS mount

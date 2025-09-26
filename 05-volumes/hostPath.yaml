@@ -1,24 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: emptydir-demo
+  name: hostpath-demo
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: emptydir-app
+      app: hostpath-app
   template:
     metadata:
       labels:
-        app: emptydir-app
+        app: hostpath-app
     spec:
       containers:
       - name: app-container
         image: busybox
         command: ["sleep", "3600"]
         volumeMounts:
-        - name: temp-storage
-          mountPath: /tmp/data
+        - name: host-storage
+          mountPath: /host/data
       volumes:
-      - name: temp-storage
-        emptyDir: {}
+      - name: host-storage
+        hostPath:
+          path: /data/logs
+          type: DirectoryOrCreate
