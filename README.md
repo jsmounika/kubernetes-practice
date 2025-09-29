@@ -188,7 +188,7 @@ Useful when your app reads secrets from files.
 In this example,  
  - `APP_MODE` is injected from ConfigMap  
 
-## 7. Secrets
+## 7. Secrets (As env variables)
 **Use case:** Secrets are used for sensitive data like passwords and tokens  
 **Example:** [Secrets](07-secrets/secrets.yaml), [Secret-deployment](07-secrets/secret-deployment.yaml)  
 In this example,  
@@ -312,8 +312,8 @@ This example setup demonstrates how to expose an internal application using Ingr
 #### 🧪 Testing:
 
 kubectl apply -f nginx-deployment.yaml  
-kubectl apply -f nginx-service.yaml  
-kubectl apply -f nginx-ingress.yaml  
+kubectl apply -f service.yaml  
+kubectl apply -f ingress.yaml  
 
 Then add below line into your /etc/hosts:  
 `<your-cluster-ip> nginx.local`  
