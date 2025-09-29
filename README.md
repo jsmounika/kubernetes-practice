@@ -23,6 +23,7 @@ This repository has beginner friendly kubernetes basic components examples for p
 **Example:** - [Pod with Multiple containers](01-pods/pod-with-multi-container.yaml)
 ### d. Pod with resources
 **Example:** - [Pod with Resources](01-pods/pod-with-resources.yaml)  
+
 **Types of QoS (Resources in pod spec):**  
 **What is QoS? -**  
 	QoS stands for Quality of Service. It's a system Kubernetes uses to classify and prioritize Pods, especially when a node is running low on resources like CPU or memory.  
@@ -208,6 +209,7 @@ In this example,
 2. **As Environment Variables**: Injected using `valueFrom.configMapKeyRef` or `valueFrom.secretKeyRef`.
 
 ## 8. Persistent Volume  
+**Example:** [PV Deployment](08-persistentVolumes)  
 **What is a Persistent Volume (PV)?**  
 A Persistent Volume (PV) is a piece of storage in the cluster that has been provisioned by an administrator or dynamically created using Storage Classes. It’s like a pre-configured hard drive that your pods can use to store data persistently.
 
@@ -237,6 +239,7 @@ Kubernetes --> Matches PVC to PV (Binding)
 Pod --> Uses PVC as a Volume  
 
 ## 9. StorageClass  
+**Example:** [Storage Class Deployment ](09-storageClass)  
 **What Is a Storage Class?**  
 A StorageClass in Kubernetes defines how storage is provisioned dynamically. Instead of manually creating a Persistent Volume (PV), you can let Kubernetes automatically create one when a PVC is made.  
 
@@ -273,10 +276,63 @@ Represents the actual storage resource that gets bound to the PVC.
 [Pod] --> Uses PVC as a volume  
 
 ## 10. StatefulSet
-## 11. DeamonSet
-## 12. Ingress
+**Example:** [StatefulSet](10-statefulset/statefulset.yaml)  
+> Note: `nginx` is used in StatefulSet examples for simplicity, but real-world StatefulSets are better suited for databases and stateful services.  
+- Manages stateful applications with stable network identity and persistent storage(data storage that remains intact even if the pod using it is deleted, restarted, or rescheduled to another node).  
+- **Use case:** databases  
+### 🆚 Deployment vs StatefulSet  
+- **Deployment** is used for stateless applications like web servers.  
+- **StatefulSet** is used for stateful applications like databases.  
+- StatefulSet ensures each pod has:  
+  - A stable name (`pod-0`, `pod-1`)  
+  - Its own persistent volume  
+  - Stable DNS for inter-pod communication  
+
+## 11. DaemonSet
+**Example:** [Daemonset](11-daemonset/deamon-deploy.yaml)  
+- Ensures a pod runs on every node.  
+- **Use case:** log collectors, monitoring agents.  
+
+## 12. Ingress  
+- Manages external access to services via HTTP/HTTPS.  
+- **Use case:** routing traffic to services using host/path rules.  
+
+**Example:** [Ingress](12-ingress)
+
+This example setup demonstrates how to expose an internal application using Ingress.  
+#### ✅ Components:
+1. **Deployment**: Runs the `nginx` web server.
+2. **Service**: Exposes the deployment inside the cluster.
+3. **Ingress**: Routes external HTTP traffic to the service.
+
+#### 🔧 Prerequisites:
+- An **Ingress Controller** must be installed (e.g., NGINX Ingress Controller).  
+- DNS or `/etc/hosts` entry should point `nginx.local` to your cluster IP.  
+
+#### 🧪 Testing:
+
+kubectl apply -f nginx-deployment.yaml  
+kubectl apply -f nginx-service.yaml  
+kubectl apply -f nginx-ingress.yaml  
+
+Then add below line into your /etc/hosts:  
+`<your-cluster-ip> nginx.local`  
+
 ## 13. Taint and Tolerations
+**Example:** [Toleration](13-taint-tolerations/pod-with-tolerations.yaml)  
+- Taint a node before deploying above pod using below command.  
+- Taint a node: `kubectl taint nodes <node-name> example-key=example-value:NoSchedule`  
+- Check taints: `kubectl describe node <node-name>`  
+- Tolerations allow pods to be scheduled on tainted nodes.  
+
 ## 14. NodeSelector
+**Example:** [Node Selector](14-nodeSelector/nodeselector.yaml)  
+
 ## 15. NodeAffinity
+**Example:** [Node Affinity](15-affinities/nodeAffinity.yaml)  
+
 ## 16. Pod Affinity
-## 17. Pod Anti-Affinit
+**Example:** [Pod Affinity](15-affinities/podAffinity.yaml)  
+
+## 17. Pod Anti-Affinity
+**Example:** [Pod Anti-Affinity](15-affinities/podAntiAffinity.yaml)   
