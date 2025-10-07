@@ -327,12 +327,21 @@ Then add below line into your /etc/hosts:
 
 ## 14. NodeSelector
 **Example:** [Node Selector](14-nodeSelector/nodeselector.yaml)  
+- Schedule pods on nodes with specific labels.
+- Add label: `kubectl label nodes <node-name> disktype=ssd`
 
 ## 15. NodeAffinity
 **Example:** [Node Affinity](15-affinities/nodeAffinity.yaml)  
+- Advanced scheduling based on node labels.
+- Supports required and preferred rules.
+- Add label: `kubectl label nodes <node-name> disktype=ssd`
 
 ## 16. Pod Affinity
 **Example:** [Pod Affinity](15-affinities/podAffinity.yaml)  
+- Schedule pods near other pods with matching labels.
+- Use case: co-located microservices.
 
 ## 17. Pod Anti-Affinity
 **Example:** [Pod Anti-Affinity](15-affinities/podAntiAffinity.yaml)   
+- Avoid scheduling pods on the same node as others with matching labels.
+- Use case: high availability.

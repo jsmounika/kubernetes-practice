@@ -1,0 +1,12 @@
+#Label the node using this command - kubectl label nodes <node-name> disktype=ssd
+apiVersion: v1
+kind: Pod
+metadata:
+  name: node-selector-pod
+spec:
+  nodeSelector:
+    disktype: ssd #pod will deploy only in the node which has this label
+  containers:
+  - name: busybox
+    image: busybox
+    command: ["sleep", "3600"]
